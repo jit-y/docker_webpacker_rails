@@ -6,4 +6,3 @@ vendor/bundle
 vendor/node_modules
 .git
 .bundle
-app/javascript

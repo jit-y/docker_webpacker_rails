@@ -24,18 +24,20 @@ WORKDIR /home/rails/project
 RUN gem install bundler
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-# COPY vendor/package.json vendor/package.json
-# COPY vendor/yarn.lock vendor/yarn.lock
-# COPY bin/yarn bin/yarn
+COPY vendor/package.json vendor/package.json
+COPY vendor/yarn.lock vendor/yarn.lock
+COPY bin/yarn bin/yarn
 RUN bundle install --path vendor/bundle --jobs=4 --without development test
-# RUN bundle exec bin/yarn
+RUN bundle exec bin/yarn
+
+# assets
 COPY . /home/rails/project
 USER root
-RUN chown rails.rails tmp log public/assets
+RUN chown rails.rails -R tmp log public
 USER rails
-
 RUN RAILS_ENV=production bundle exec bin/rails assets:precompile
 
+# log
 RUN ln -sfn /dev/stdout log/unicorn_stdout.log
 RUN ln -sfn /dev/stderr log/unicorn_stderr.log
 
