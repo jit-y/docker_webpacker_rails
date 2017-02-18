@@ -5,6 +5,8 @@ RUN useradd rails -d /home/rails \
     && mkdir -p /home/rails \
     && chown rails.rails -R /home/rails
 
+EXPOSE 3000
+
 USER rails
 WORKDIR /home/rails
 
@@ -22,8 +24,20 @@ WORKDIR /home/rails/project
 RUN gem install bundler
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-COPY vendor/package.json vendor/package.json
-COPY vendor/yarn.lock vendor/yarn.lock
-COPY bin/yarn bin/yarn
+# COPY vendor/package.json vendor/package.json
+# COPY vendor/yarn.lock vendor/yarn.lock
+# COPY bin/yarn bin/yarn
 RUN bundle install --path vendor/bundle --jobs=4 --without development test
-RUN bundle exec bin/yarn
+# RUN bundle exec bin/yarn
+COPY . /home/rails/project
+USER root
+RUN chown rails.rails tmp log public/assets
+USER rails
+
+RUN RAILS_ENV=production bundle exec bin/rails assets:precompile
+
+RUN ln -sfn /dev/stdout log/unicorn_stdout.log
+RUN ln -sfn /dev/stderr log/unicorn_stderr.log
+
+CMD RAILS_ENV=production bundle exec bin/rails db:reset
+CMD exec bundle exec unicorn_rails -c config/unicorn.rb -E production

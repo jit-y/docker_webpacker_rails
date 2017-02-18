@@ -1,14 +1,13 @@
 version: '2'
 services:
-  db:
-    image: mysql:5.7
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
     ports:
-      - "3306:3306"
-    environment:
-      MYSQL_DATABASE: docker_on_rails
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_USER: docker_on_rails
-      MYSQL_PASSWORD: password
+      - 127.0.0.1:8080:80
+    links:
+      - web
   web:
     build:
       context: .
@@ -17,3 +16,16 @@ services:
       DB_NAME: docker_on_rails
       DB_USER: root
       DB_PASSWORD: rootpassword
+      SECRET_KEY_BASE: dummy
+      RAILS_SERVE_STATIC_FILES: 'true'
+    links:
+      - db
+  db:
+    image: mysql:5.7
+    ports:
+      - 127.0.0.1:3306:3306
+    environment:
+      MYSQL_DATABASE: docker_on_rails
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: docker_on_rails
+      MYSQL_PASSWORD: password
