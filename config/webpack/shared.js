@@ -50,7 +50,7 @@ config = {
   plugins: [],
 
   resolve: {
-    extensions: [ '.js', '.coffee' ],
+    extensions: [ '.js', '.coffee', '.jsx' ],
     modules: [
       path.resolve('../app/javascript'),
       path.resolve('../vendor/node_modules')

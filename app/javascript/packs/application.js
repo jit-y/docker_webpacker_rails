@@ -5,5 +5,10 @@
 //
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
+import React from 'react'
+import { render } from 'react-dom'
+import Hello from './hello_react'
 
-console.log('Hello World from Webpacker')
+document.addEventListener("DOMContentLoaded", e => {
+  render(<Hello name="React" />, document.body.appendChild(document.createElement('div')))
+})
