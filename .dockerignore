@@ -1,0 +1,8 @@
+tmp
+!tmp/.keep
+log
+!log/.keep
+vendor/bundle
+vendor/node_modules
+.git
+.bundle
